@@ -14,13 +14,13 @@ jobs:
           java-version: '21'
           distribution: 'temurin'
 
-      - name: Download Forge MDK 1.21.11
+      - name: Download Forge MDK 1.21.1
         run: |
-          curl -L "https://maven.minecraftforge.net/net/minecraftforge/forge/1.21.11-63.0.10/forge-1.21.11-63.0.10-mdk.zip" -o mdk.zip
-          unzip -o mdk.zip -d mdktemp || true
-          cp mdktemp/gradlew golemmod-forge/ 2>/dev/null || cp gradlew golemmod-forge/ 2>/dev/null || true
-          cp mdktemp/gradlew.bat golemmod-forge/ 2>/dev/null || cp gradlew.bat golemmod-forge/ 2>/dev/null || true
-          cp -r mdktemp/gradle golemmod-forge/ 2>/dev/null || cp -r gradle golemmod-forge/ 2>/dev/null || true
+          curl -L "https://maven.minecraftforge.net/net/minecraftforge/forge/1.21.1-52.0.47/forge-1.21.1-52.0.47-mdk.zip" -o mdk.zip
+          unzip mdk.zip -d mdktemp
+          cp mdktemp/gradlew golemmod-forge/
+          cp mdktemp/gradlew.bat golemmod-forge/
+          cp -r mdktemp/gradle golemmod-forge/
           chmod +x golemmod-forge/gradlew
 
       - name: Fix build.gradle
@@ -43,22 +43,36 @@ jobs:
               toolchain.languageVersion = JavaLanguageVersion.of(21)
           }
           minecraft {
-              mappings channel: 'official', version: '1.21.11'
+              mappings channel: 'official', version: '1.21.1'
           }
           dependencies {
-              minecraft 'net.minecraftforge:forge:1.21.11-63.0.10'
+              minecraft 'net.minecraftforge:forge:1.21.1-52.0.47'
           }
           EOF
 
-      - name: Fix Java files
-        run: |
-          sed -i 's/import net.minecraftforge.event.level.LevelTickEvent/import net.minecraftforge.event.TickEvent/' golemmod-forge/src/main/java/com/golemmod/event/GolemSpawnEvent.java
-          sed -i 's/LevelTickEvent.Post/TickEvent.LevelTickEvent/' golemmod-forge/src/main/java/com/golemmod/event/GolemSpawnEvent.java
-
       - name: Fix mods.toml
         run: |
-          sed -i 's/versionRange="\[62,)"/versionRange="[63,)"/' golemmod-forge/src/main/resources/META-INF/mods.toml
-          sed -i 's/versionRange="\[26.1,)"/versionRange="[1.21.11,)"/' golemmod-forge/src/main/resources/META-INF/mods.toml
+          cat > golemmod-forge/src/main/resources/META-INF/mods.toml << 'EOF'
+          modLoader="javafml"
+          loaderVersion="[52,)"
+          license="MIT"
+          [[mods]]
+              modId="golemmod"
+              version="1.0.0"
+              displayName="Golem Mod"
+          [[dependencies.golemmod]]
+              modId="forge"
+              mandatory=true
+              versionRange="[52,)"
+              ordering="NONE"
+              side="BOTH"
+          [[dependencies.golemmod]]
+              modId="minecraft"
+              mandatory=true
+              versionRange="[1.21.1,)"
+              ordering="NONE"
+              side="BOTH"
+          EOF
 
       - name: Build
         run: |
