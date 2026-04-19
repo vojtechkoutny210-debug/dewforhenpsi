@@ -52,9 +52,6 @@ jobs:
           package com.golemmod.item;
           import com.golemmod.GolemMod;
           import net.minecraft.world.item.Item;
-          import net.minecraftforge.eventbus.api.IEventBus;
-          import net.minecraftforge.eventbus.api.SubscribeEvent;
-          import net.minecraftforge.fml.event.lifecycle.FMLCommonSetupEvent;
           import net.minecraftforge.registries.DeferredRegister;
           import net.minecraftforge.registries.ForgeRegistries;
           import net.minecraftforge.registries.RegistryObject;
@@ -247,10 +244,13 @@ jobs:
       - name: Build
         run: |
           cd golemmod-forge
-          ./gradlew jar --info 2>&1 | tail -150
+          ./gradlew jar
+          echo "=== JAR FILES ==="
+          find . -name "*.jar" | grep -v cache | grep -v forge | grep -v gradle
 
       - name: Upload jar
         uses: actions/upload-artifact@v4
         with:
           name: golemmod-1.21.11
-          path: golemmod-forge/build/libs/*.jar
+          path: golemmod-forge/build/libs/golemmod-1.0.0.jar
+          if-no-files-found: warn
