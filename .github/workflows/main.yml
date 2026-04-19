@@ -23,6 +23,10 @@ jobs:
           cp -r mdktemp/gradle golemmod-forge/ 2>/dev/null || cp -r gradle golemmod-forge/ 2>/dev/null || true
           chmod +x golemmod-forge/gradlew
 
+      - name: Downgrade Gradle
+        run: |
+          sed -i 's/gradle-9.3.1-bin.zip/gradle-8.8-bin.zip/' golemmod-forge/gradle/wrapper/gradle-wrapper.properties
+
       - name: Fix build.gradle
         run: |
           cat > golemmod-forge/build.gradle << 'EOF'
