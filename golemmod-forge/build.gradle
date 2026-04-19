@@ -1,0 +1,42 @@
+plugins {
+    id 'java'
+    id 'net.minecraftforge.gradle' version '[6,)'
+}
+
+group   = 'com.golemmod'
+version = '1.0.0'
+
+java {
+    toolchain.languageVersion = JavaLanguageVersion.of(25)
+}
+
+minecraft {
+    // Zkontroluj aktualni verzi Forge na https://files.minecraftforge.net
+    // Pro 26.1 je to 62.0.9 (nebo novejsi)
+    mappings channel: 'official', version: '26.1'
+
+    runs {
+        client {
+            workingDirectory project.file('run')
+            property 'forge.logging.console.level', 'debug'
+            mods {
+                golemmod { source sourceSets.main }
+            }
+        }
+        server {
+            workingDirectory project.file('run')
+            property 'forge.logging.console.level', 'debug'
+            mods {
+                golemmod { source sourceSets.main }
+            }
+        }
+    }
+}
+
+repositories {
+    mavenCentral()
+}
+
+dependencies {
+    minecraft 'net.minecraftforge:forge:26.1-62.0.9'
+}

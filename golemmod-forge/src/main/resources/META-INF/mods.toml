@@ -1,0 +1,27 @@
+modLoader="javafml"
+loaderVersion="[62,)"
+license="MIT"
+
+[[mods]]
+    modId="golemmod"
+    version="1.0.0"
+    displayName="Golem Mod"
+    description='''
+        Az 15 golemu kdyz jsou villageri v nebezpeci.
+        Activator Rod a Activator Frame itemy.
+        Golemove jdou k lave.
+    '''
+
+[[dependencies.golemmod]]
+    modId="forge"
+    mandatory=true
+    versionRange="[62,)"
+    ordering="NONE"
+    side="BOTH"
+
+[[dependencies.golemmod]]
+    modId="minecraft"
+    mandatory=true
+    versionRange="[26.1,)"
+    ordering="NONE"
+    side="BOTH"
