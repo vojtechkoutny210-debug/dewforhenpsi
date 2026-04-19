@@ -17,10 +17,11 @@ jobs:
       - name: Download Forge MDK
         run: |
           curl -L "https://maven.minecraftforge.net/net/minecraftforge/forge/26.1-62.0.9/forge-26.1-62.0.9-mdk.zip" -o mdk.zip
-          unzip mdk.zip
-          cp -r forge-26.1-62.0.9/* golemmod-forge/
+          unzip -o mdk.zip -d mdktemp || true
+          cp mdktemp/gradlew golemmod-forge/ 2>/dev/null || cp gradlew golemmod-forge/ 2>/dev/null || true
+          cp mdktemp/gradlew.bat golemmod-forge/ 2>/dev/null || cp gradlew.bat golemmod-forge/ 2>/dev/null || true
+          cp -r mdktemp/gradle golemmod-forge/ 2>/dev/null || cp -r gradle golemmod-forge/ 2>/dev/null || true
           chmod +x golemmod-forge/gradlew
-
       - name: Build
         run: |
           cd golemmod-forge
