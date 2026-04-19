@@ -22,6 +22,34 @@ jobs:
           cp mdktemp/gradlew.bat golemmod-forge/ 2>/dev/null || cp gradlew.bat golemmod-forge/ 2>/dev/null || true
           cp -r mdktemp/gradle golemmod-forge/ 2>/dev/null || cp -r gradle golemmod-forge/ 2>/dev/null || true
           chmod +x golemmod-forge/gradlew
+
+      - name: Fix build.gradle
+        run: |
+          cat > golemmod-forge/build.gradle << 'EOF'
+          buildscript {
+              repositories {
+                  maven { url = 'https://maven.minecraftforge.net' }
+                  mavenCentral()
+              }
+              dependencies {
+                  classpath 'net.minecraftforge.gradle:ForgeGradle:6.+'
+              }
+          }
+          apply plugin: 'java'
+          apply plugin: 'net.minecraftforge.gradle'
+          group = 'com.golemmod'
+          version = '1.0.0'
+          java {
+              toolchain.languageVersion = JavaLanguageVersion.of(21)
+          }
+          minecraft {
+              mappings channel: 'official', version: '26.1'
+          }
+          dependencies {
+              minecraft 'net.minecraftforge:forge:26.1-62.0.9'
+          }
+          EOF
+
       - name: Build
         run: |
           cd golemmod-forge
