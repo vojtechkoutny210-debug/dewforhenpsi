@@ -41,7 +41,7 @@ jobs:
           public class GolemMod {
               public static final String MODID = "golemmod";
               public GolemMod(FMLJavaModLoadingContext context) {
-                  context.getModEventBus().register(ModItems.class);
+                  ModItems.ITEMS.register(context.getModEventBus());
                   MinecraftForge.EVENT_BUS.register(new GolemSpawnEvent());
                   MinecraftForge.EVENT_BUS.register(new GolemLavaEvent());
               }
@@ -69,7 +69,7 @@ jobs:
           package com.golemmod.event;
           import net.minecraft.server.level.ServerLevel;
           import net.minecraft.world.entity.EntityType;
-          import net.minecraft.world.entity.animal.IronGolem;
+          import net.minecraft.world.entity.monster.IronGolem;
           import net.minecraft.world.entity.npc.Villager;
           import net.minecraft.world.phys.AABB;
           import net.minecraftforge.event.TickEvent;
@@ -126,7 +126,7 @@ jobs:
           package com.golemmod.event;
           import net.minecraft.core.BlockPos;
           import net.minecraft.world.entity.ai.goal.Goal;
-          import net.minecraft.world.entity.animal.IronGolem;
+          import net.minecraft.world.entity.monster.IronGolem;
           import net.minecraft.world.level.block.Blocks;
           import net.minecraftforge.event.entity.EntityJoinLevelEvent;
           import net.minecraftforge.eventbus.api.SubscribeEvent;
@@ -245,7 +245,6 @@ jobs:
         run: |
           cd golemmod-forge
           ./gradlew jar
-          echo "=== JAR FILES ==="
           find . -name "*.jar" | grep -v cache | grep -v forge | grep -v gradle
 
       - name: Upload jar
