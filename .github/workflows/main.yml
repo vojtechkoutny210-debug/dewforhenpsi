@@ -8,21 +8,20 @@ jobs:
     steps:
       - uses: actions/checkout@v4
 
-      - name: Set up Java 25
+      - name: Set up Java 21
         uses: actions/setup-java@v4
         with:
-          java-version: '25'
+          java-version: '21'
           distribution: 'temurin'
 
-      - name: Download Forge MDK 26.1
+      - name: Download Forge MDK 1.21.11
         run: |
-          curl -L "https://maven.minecraftforge.net/net/minecraftforge/forge/26.1-62.0.9/forge-26.1-62.0.9-mdk.zip" -o mdk.zip
+          curl -L "https://maven.minecraftforge.net/net/minecraftforge/forge/1.21.11-61.1.5/forge-1.21.11-61.1.5-mdk.zip" -o mdk.zip
           unzip mdk.zip -d mdktemp
           cp mdktemp/gradlew golemmod-forge/
           cp mdktemp/gradlew.bat golemmod-forge/
           cp -r mdktemp/gradle golemmod-forge/
           chmod +x golemmod-forge/gradlew
-          echo "org.gradle.java.home=$JAVA_HOME" >> golemmod-forge/gradle.properties
 
       - name: Fix Java source files
         run: |
@@ -32,15 +31,13 @@ jobs:
           import com.golemmod.event.GolemSpawnEvent;
           import com.golemmod.item.ModItems;
           import net.minecraftforge.common.MinecraftForge;
-          import net.minecraftforge.eventbus.api.IEventBus;
           import net.minecraftforge.fml.common.Mod;
           import net.minecraftforge.fml.javafmlmod.FMLJavaModLoadingContext;
           @Mod(GolemMod.MODID)
           public class GolemMod {
               public static final String MODID = "golemmod";
               public GolemMod(FMLJavaModLoadingContext context) {
-                  IEventBus modBus = context.getModEventBus();
-                  ModItems.ITEMS.register(modBus);
+                  context.getModEventBus().register(ModItems.class);
                   MinecraftForge.EVENT_BUS.register(new GolemSpawnEvent());
                   MinecraftForge.EVENT_BUS.register(new GolemLavaEvent());
               }
@@ -121,13 +118,13 @@ jobs:
           group = 'com.golemmod'
           version = '1.0.0'
           java {
-              toolchain.languageVersion = JavaLanguageVersion.of(25)
+              toolchain.languageVersion = JavaLanguageVersion.of(21)
           }
           minecraft {
-              mappings channel: 'official', version: '26.1'
+              mappings channel: 'official', version: '1.21.11'
           }
           dependencies {
-              minecraft 'net.minecraftforge:forge:26.1-62.0.9'
+              minecraft 'net.minecraftforge:forge:1.21.11-61.1.5'
           }
           EOF
 
@@ -135,7 +132,7 @@ jobs:
         run: |
           cat > golemmod-forge/src/main/resources/META-INF/mods.toml << 'EOF'
           modLoader="javafml"
-          loaderVersion="[62,)"
+          loaderVersion="[61,)"
           license="MIT"
           [[mods]]
               modId="golemmod"
@@ -144,13 +141,13 @@ jobs:
           [[dependencies.golemmod]]
               modId="forge"
               mandatory=true
-              versionRange="[62,)"
+              versionRange="[61,)"
               ordering="NONE"
               side="BOTH"
           [[dependencies.golemmod]]
               modId="minecraft"
               mandatory=true
-              versionRange="[26.1,)"
+              versionRange="[1.21.11,)"
               ordering="NONE"
               side="BOTH"
           EOF
@@ -163,5 +160,5 @@ jobs:
       - name: Upload jar
         uses: actions/upload-artifact@v4
         with:
-          name: golemmod-26.1
+          name: golemmod-1.21.11
           path: golemmod-forge/build/libs/*.jar
